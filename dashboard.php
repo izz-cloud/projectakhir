@@ -14,97 +14,174 @@ $query = mysqli_query($koneksi, "
     WHERE user_id='$user_id'
     ORDER BY tanggal_pengajuan DESC
 ");
+
+$pengajuan = [];
+while ($row = mysqli_fetch_assoc($query)) {
+    $pengajuan[] = $row;
+}
+
+$total = count($pengajuan);
+$pending = count(array_filter($pengajuan, function($p) {
+    return $p['status'] === 'Menunggu';
+}));
+$selesai = count(array_filter($pengajuan, function($p) {
+    return $p['status'] !== 'Menunggu';
+}));
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-<title>Dashboard User UKS</title> 
-<link rel="stylesheet" href="dash.css?v=1">
+    <title>Dashboard User UKS</title>
+    <link rel="stylesheet" href="dash.css?v=2">
 </head>
 <body>
 <div class="container">
-<h2>Dashboard UKS Siswa</h2>
-
-<h3>Form Keluhan</h3>
-<form action="proses_pengajuan.php" method="POST">
-
-    <!-- NAMA SISWA -->
-    <input 
-        type="text" 
-        name="nama_siswa" 
-        placeholder="Nama Siswa"
-        required
-        pattern="[A-Za-z\s]+"
-        title="Nama hanya boleh huruf dan spasi"
-    ><br><br>
-
-    <!-- KELAS -->
-    <input 
-        type="text" 
-        name="kelas" 
-        placeholder="Contoh: X RPL 3"
-        required
-        pattern="^(X|XI|XII)\s[A-Z]{2,4}\s[1-9]$"
-        title="Format kelas: X RPL 3 / XI TKJ 2 / XII DKV 1"
-        oninput="this.value = this.value.toUpperCase()"
-    ><br><br>
-
-    <!-- KELUHAN -->
-    <input 
-        type="text" 
-        name="keluhan" 
-        placeholder="Keluhan"
-        required
-    ><br><br>
-
-    <button type="submit">Kirim</button>
-</form>
-
-<hr>
-
-<h3>Riwayat Pengajuan</h3>
-
-<table border="1" cellpadding="8" cellspacing="0">
-<tr>
-    <th>No</th>
-    <th>Tanggal</th>
-    <th>Keluhan</th>
-    <th>Status</th>
-    <th>Jawaban UKS</th>
-</tr>
-
-<?php if(mysqli_num_rows($query) == 0): ?>
-<tr>
-    <td colspan="5" align="center">Belum ada pengajuan</td>
-</tr>
-<?php endif; ?>
-
-<?php $no=1; while($row = mysqli_fetch_assoc($query)): ?>
-<tr>
-    <td><?= $no++ ?></td>
-    <td><?= $row['tanggal_pengajuan'] ?></td>
-    <td><?= nl2br($row['keluhan']) ?></td>
-    <td><?= $row['status'] ?></td>
-    <td>
-        <?php if($row['status'] == 'Menunggu'): ?>
-            Menunggu respon UKS
-        <?php else: ?>
-            <b>Diagnosis:</b> <?= $row['diagnosis'] ?><br>
-            <b>Tindakan:</b> <?= $row['tindakan'] ?><br>
-            <small><?= $row['tanggal_respon'] ?></small>
-        <?php endif; ?>
-    </td>
-</tr>
-<?php endwhile; ?>
-</table>
-
-<br>
-    <div class="header-actions">
-        <a href="logout.php" class="btn btn-logout"
-           onclick="return confirm('Yakin ingin logout?')">
-           Logout
-        </a>
+    <div class="page-header">
+        <div class="title">
+            <h2>Dashboard UKS Siswa</h2>
+            <p>Laporkan keluhan dengan cepat dan pantau respon UKS.</p>
+        </div>
+        <div class="header-actions">
+            <a href="logout.php" class="btn btn-logout" onclick="return confirm('Yakin ingin logout?')">
+                Logout
+            </a>
+        </div>
     </div>
-  </div>
+
+    <div class="summary-grid">
+        <div class="summary-card">
+            <h4>Total Pengajuan</h4>
+            <div class="summary-value"><?= $total ?></div>
+            <div class="summary-sub">Semua pengajuan yang kamu kirim</div>
+        </div>
+        <div class="summary-card">
+            <h4>Menunggu Respon</h4>
+            <div class="summary-value"><?= $pending ?></div>
+            <div class="summary-sub">Menanti pengecekan UKS</div>
+        </div>
+        <div class="summary-card">
+            <h4>Selesai / Diproses</h4>
+            <div class="summary-value"><?= $selesai ?></div>
+            <div class="summary-sub">Sudah ditindaklanjuti UKS</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Form Keluhan</h3>
+        <p>Isi data di bawah secara singkat agar petugas UKS dapat menindaklanjuti.</p>
+        <form action="proses_pengajuan.php" method="POST">
+            <div>
+                <label for="nama_siswa">Nama Siswa</label>
+                <input
+                    id="nama_siswa"
+                    type="text"
+                    name="nama_siswa"
+                    placeholder="Nama Siswa"
+                    required
+                    pattern="[A-Za-z\s]+"
+                    title="Nama hanya boleh huruf dan spasi"
+                >
+            </div>
+
+            <div>
+                <label for="kelas">Kelas</label>
+                <input
+                    id="kelas"
+                    type="text"
+                    name="kelas"
+                    placeholder="Contoh: X RPL 3"
+                    required
+                    pattern="^(X|XI|XII)\s[A-Z]{2,4}\s[1-9]$"
+                    title="Format kelas: X RPL 3 / XI TKJ 2 / XII DKV 1"
+                    oninput="this.value = this.value.toUpperCase()"
+                >
+            </div>
+
+            <div>
+                <label for="keluhan">Keluhan</label>
+                <textarea
+                    id="keluhan"
+                    name="keluhan"
+                    placeholder="Tuliskan keluhan kesehatan yang dirasakan"
+                    required
+                    rows="3"
+                ></textarea>
+            </div>
+
+            <button type="submit">Kirim Keluhan</button>
+        </form>
+    </div>
+
+    <div class="table-card">
+        <div class="table-toolbar">
+            <h3>Riwayat Pengajuan</h3>
+            <div class="search-box">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5d6d6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="16.65" y1="16.65" x2="21" y2="21"></line></svg>
+                <input type="text" id="searchInput" placeholder="Cari keluhan, status, atau tanggal">
+            </div>
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Tanggal</th>
+                        <th>Keluhan</th>
+                        <th>Status</th>
+                        <th>Jawaban UKS</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <?php if($total === 0): ?>
+                        <tr>
+                            <td colspan="5" class="empty-state" data-label="Kosong">
+                                <strong>Belum ada pengajuan</strong>
+                                Kirim keluhan pertama Anda lewat formulir di atas.
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+
+                    <?php $no=1; foreach($pengajuan as $row): ?>
+                        <?php
+                            $statusClass = $row['status'] === 'Menunggu' ? 'status-menunggu' : 'status-selesai';
+                            $statusLabel = $row['status'];
+                        ?>
+                        <tr>
+                            <td data-label="No"><?= $no++ ?></td>
+                            <td data-label="Tanggal"><?= $row['tanggal_pengajuan'] ?></td>
+                            <td data-label="Keluhan"><?= nl2br($row['keluhan']) ?></td>
+                            <td data-label="Status">
+                                <span class="status-badge <?= $statusClass ?>"><?= $statusLabel ?></span>
+                            </td>
+                            <td data-label="Jawaban UKS">
+                                <?php if($row['status'] == 'Menunggu'): ?>
+                                    <span class="badge-note">Menunggu respon UKS</span>
+                                <?php else: ?>
+                                    <b>Diagnosis:</b> <?= $row['diagnosis'] ?><br>
+                                    <b>Tindakan:</b> <?= $row['tindakan'] ?><br>
+                                    <small><?= $row['tanggal_respon'] ?></small>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="auth-uks/transisi.js"></script>
+<script>
+    const searchInput = document.getElementById('searchInput');
+    const rows = Array.from(document.querySelectorAll('#tableBody tr'));
+
+    searchInput?.addEventListener('input', () => {
+        const term = searchInput.value.toLowerCase();
+        rows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            row.style.display = text.includes(term) ? '' : 'none';
+        });
+    });
+</script>
 </body>
 </html>

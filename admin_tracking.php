@@ -51,13 +51,31 @@ $selesai   = mysqli_num_rows(mysqli_query($koneksi, "SELECT id FROM pengajuan_uk
 <style>
 *{box-sizing:border-box;font-family:'Segoe UI',Tahoma,sans-serif}
 body{
-    background:linear-gradient(135deg,#2b333a,#839697);
-    padding:30px;min-height:100vh
+    background:linear-gradient(135deg,#2b333a,#839697); /* fallback if image not found */
+    background-image:url('images/bg.jpg');
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+    background-attachment:fixed;
+    position:relative;
+    padding:30px;min-height:100vh;
+    opacity:1;
+    transition:opacity 0.5s cubic-bezier(0.4,0,0.2,1)
+}
+body.fade-in{opacity:1}
+body.fade-out{opacity:0;transition:opacity 0.4s cubic-bezier(0.4,0,0.2,1)}
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:rgba(43,51,58,0.7); /* dark overlay for readability */
+    z-index:-1
 }
 .container{
     max-width:1200px;margin:auto;background:#fff;
     padding:25px;border-radius:14px;
-    box-shadow:0 12px 30px rgba(0,0,0,.15)
+    box-shadow:0 12px 30px rgba(0,0,0,.15);
+    position:relative;z-index:1
 }
 .header{display:flex;justify-content:space-between;align-items:center}
 .header h2{color:#2b333a}
@@ -184,5 +202,6 @@ tr:hover{background:#f5f9ff}
     </table>
 </div>
 
+<script src="auth-uks/transisi.js"></script>
 </body>
 </html>

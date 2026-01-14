@@ -41,5 +41,5 @@ if ($data && password_verify($password, $data['password'])) {
 /* =======================
    3. GAGAL LOGIN
    ======================= */
-echo "Login gagal. Username / Email atau password salah.";
+header("Location: login.php?error=" . urlencode("Username atau password salah. Silakan coba lagi."));
 exit;
