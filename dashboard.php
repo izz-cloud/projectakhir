@@ -29,10 +29,13 @@ $selesai = count(array_filter($pengajuan, function($p) {
 }));
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Dashboard siswa untuk Sistem Informasi UKS - Kelola pengajuan keluhan kesehatan">
     <title>Dashboard User UKS</title>
-    <link rel="stylesheet" href="dash.css?v=2">
+    <link rel="stylesheet" href="dash.css?v=4">
 </head>
 <body>
 <div class="container">
@@ -42,7 +45,7 @@ $selesai = count(array_filter($pengajuan, function($p) {
             <p>Laporkan keluhan dengan cepat dan pantau respon UKS.</p>
         </div>
         <div class="header-actions">
-            <a href="logout.php" class="btn btn-logout" onclick="return confirm('Yakin ingin logout?')">
+            <a href="logout.php" class="btn btn-logout" onclick="return confirm('Yakin ingin logout?')" aria-label="Keluar dari akun">
                 Logout
             </a>
         </div>
@@ -66,10 +69,10 @@ $selesai = count(array_filter($pengajuan, function($p) {
         </div>
     </div>
 
-    <div class="card">
-        <h3>Form Keluhan</h3>
+    <div class="card" role="region" aria-labelledby="form-title">
+        <h3 id="form-title">Form Keluhan</h3>
         <p>Isi data di bawah secara singkat agar petugas UKS dapat menindaklanjuti.</p>
-        <form action="proses_pengajuan.php" method="POST">
+        <form action="proses_pengajuan.php" method="POST" aria-label="Form pengajuan keluhan kesehatan">
             <div>
                 <label for="nama_siswa">Nama Siswa</label>
                 <input
@@ -80,7 +83,11 @@ $selesai = count(array_filter($pengajuan, function($p) {
                     required
                     pattern="[A-Za-z\s]+"
                     title="Nama hanya boleh huruf dan spasi"
+                    aria-required="true"
+                    aria-describedby="nama-help"
+                    autocomplete="name"
                 >
+                <small id="nama-help" class="form-helper">Hanya huruf dan spasi</small>
             </div>
 
             <div>
@@ -94,7 +101,11 @@ $selesai = count(array_filter($pengajuan, function($p) {
                     pattern="^(X|XI|XII)\s[A-Z]{2,4}\s[1-9]$"
                     title="Format kelas: X RPL 3 / XI TKJ 2 / XII DKV 1"
                     oninput="this.value = this.value.toUpperCase()"
+                    aria-required="true"
+                    aria-describedby="kelas-help"
+                    autocomplete="off"
                 >
+                <small id="kelas-help" class="form-helper">Format: X RPL 3, XI TKJ 2, atau XII DKV 1</small>
             </div>
 
             <div>
@@ -105,23 +116,32 @@ $selesai = count(array_filter($pengajuan, function($p) {
                     placeholder="Tuliskan keluhan kesehatan yang dirasakan"
                     required
                     rows="3"
+                    aria-required="true"
+                    aria-describedby="keluhan-help"
+                    minlength="10"
                 ></textarea>
+                <small id="keluhan-help" class="form-helper">Minimal 10 karakter untuk memberikan informasi yang cukup</small>
             </div>
 
-            <button type="submit">Kirim Keluhan</button>
+            <button type="submit" aria-label="Kirim pengajuan keluhan">Kirim Keluhan</button>
         </form>
     </div>
 
-    <div class="table-card">
+    <div class="table-card" role="region" aria-labelledby="table-title">
         <div class="table-toolbar">
-            <h3>Riwayat Pengajuan</h3>
+            <h3 id="table-title">Riwayat Pengajuan</h3>
             <div class="search-box">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5d6d6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="16.65" y1="16.65" x2="21" y2="21"></line></svg>
-                <input type="text" id="searchInput" placeholder="Cari keluhan, status, atau tanggal">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5d6d6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="16.65" y1="16.65" x2="21" y2="21"></line></svg>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Cari keluhan, status, atau tanggal"
+                    aria-label="Cari dalam riwayat pengajuan"
+                >
             </div>
         </div>
         <div class="table-wrapper">
-            <table>
+            <table role="table" aria-label="Riwayat pengajuan keluhan kesehatan">
                 <thead>
                     <tr>
                         <th>No</th>
@@ -171,17 +191,6 @@ $selesai = count(array_filter($pengajuan, function($p) {
 </div>
 
 <script src="auth-uks/transisi.js"></script>
-<script>
-    const searchInput = document.getElementById('searchInput');
-    const rows = Array.from(document.querySelectorAll('#tableBody tr'));
-
-    searchInput?.addEventListener('input', () => {
-        const term = searchInput.value.toLowerCase();
-        rows.forEach(row => {
-            const text = row.innerText.toLowerCase();
-            row.style.display = text.includes(term) ? '' : 'none';
-        });
-    });
-</script>
+<script src="js/dashboard.js"></script>
 </body>
 </html>

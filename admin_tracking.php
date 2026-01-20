@@ -52,7 +52,7 @@ $selesai   = mysqli_num_rows(mysqli_query($koneksi, "SELECT id FROM pengajuan_uk
 *{box-sizing:border-box;font-family:'Segoe UI',Tahoma,sans-serif}
 body{
     background:linear-gradient(135deg,#2b333a,#839697); /* fallback if image not found */
-    background-image:url('images/bg.jpg');
+    background-image:url('images/bgs.jpg');
     background-size:cover;
     background-position:center;
     background-repeat:no-repeat;
@@ -138,14 +138,30 @@ tr:hover{background:#f5f9ff}
         font-weight:600;display:block;color:#2b333a
     }
 }
+
 </style>
+<link rel="stylesheet" href="dash.css?v=5">
 </head>
 <body>
 
+<header class="navbar" role="banner">
+    <div class="nav-brand">
+        <span class="nav-logo-circle">UKS</span>
+        <div class="nav-brand-text">
+            <span class="nav-title">Sistem Informasi UKS</span>
+            <span class="nav-subtitle">Panel Admin</span>
+        </div>
+    </div>
+    <nav class="nav-links" role="navigation" aria-label="Navigasi utama admin">
+        <a href="admin_dashboard.php" class="nav-link active">Dashboard</a>
+        <a href="admin_tracking.php" class="nav-link nav-link-secondary">Tracking</a>
+        <a href="logout.php" class="nav-link nav-link-danger" onclick="return confirm('Yakin ingin logout?')">Logout</a>
+    </nav>
+</header>
+
 <div class="container">
     <div class="header">
-        <h2>Tracking Diagnosis UKS</h2>
-        <a href="admin_dashboard.php" class="btn-back">← Dashboard</a>
+        <h1>Tracking Diagnosis UKS</h1>
     </div>
 
     <!-- Statistik -->
@@ -157,8 +173,10 @@ tr:hover{background:#f5f9ff}
 
     <!-- Filter -->
     <form class="filter-form" method="GET">
-        <input type="date" name="dari" value="<?= $dari ?>">
-        <input type="date" name="sampai" value="<?= $sampai ?>">
+        <label for="dari">Dari:</label>
+        <input type="date" name="dari" id="dari" value="<?= $dari ?>">
+        <label for="sampai">sampai:</label>
+        <input type="date" name="sampai" id="sampai" value="<?= $sampai ?>">
         <input type="text" name="kelas" placeholder="X / XI / XII" value="<?= $kelas ?>">
         <input type="text" name="cari" placeholder="Nama / keluhan" value="<?= $cari ?>">
         <select name="status">
@@ -201,6 +219,14 @@ tr:hover{background:#f5f9ff}
         <?php endwhile; ?>
     </table>
 </div>
+
+<footer class="site-footer" role="contentinfo">
+    <div class="site-footer-inner">
+        <span>&copy; <?= date('Y'); ?> Sistem Informasi UKS.</span>
+        <span class="footer-divider">•</span>
+        <span>Panel admin untuk mengelola keluhan dan tindak lanjut UKS.</span>
+    </div>
+</footer>
 
 <script src="auth-uks/transisi.js"></script>
 </body>

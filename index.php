@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sistem Informasi UKS - Loading">
 <title>Memuat Sistem UKS...</title>
 
 <style>
@@ -139,12 +140,12 @@ setTimeout(() => {
 
 <body>
 
-<div class="loading-box">
+<div class="loading-box" role="status" aria-live="polite" aria-label="Memuat sistem">
   <div class="loading-inner">
     <div class="logo-text">Sistem Informasi UKS</div>
-    <div class="spinner-ring"></div>
+    <div class="spinner-ring" aria-hidden="true"></div>
     <div class="loading-title">Memuat sistem</div>
-    <div class="loading-subtitle">Menyiapkan halaman login untuk Anda<span class="dots">...</span></div>
+    <div class="loading-subtitle">Menyiapkan halaman login untuk Anda<span class="dots" aria-hidden="true">...</span></div>
   </div>
 </div>
 

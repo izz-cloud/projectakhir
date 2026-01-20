@@ -50,6 +50,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Smooth fade-out on form submissions
   document.querySelectorAll("form").forEach(form => {
+    // Skip special handling for registration form to avoid hiding it on validation errors
+    if (form.id === "registerForm") {
+      return;
+    }
+
     const submitBtn = form.querySelector("button[type='submit'], button:not([type])");
     
     form.addEventListener("submit", (e) => {
@@ -68,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Password show/hide toggle
+  // Password show/hide toggle with accessibility
   document.querySelectorAll(".password-toggle").forEach(btn => {
     btn.addEventListener("click", () => {
       const targetId = btn.getAttribute("data-target");
@@ -78,6 +83,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const isHidden = input.type === "password";
       input.type = isHidden ? "text" : "password";
       btn.textContent = isHidden ? "🙈" : "👁";
+      
+      // Update ARIA attributes for accessibility
+      btn.setAttribute("aria-pressed", isHidden ? "true" : "false");
+      btn.setAttribute("aria-label", isHidden 
+        ? "Sembunyikan kata sandi" 
+        : "Tampilkan kata sandi");
     });
   });
 });

@@ -28,10 +28,13 @@ $selesai = count(array_filter($pengajuan, function($p) {
 }));
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-<title>Admin Dashboard UKS</title>
-<link rel="stylesheet" href="dash.css?v=2">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Dashboard admin untuk Sistem Informasi UKS - Kelola pengajuan siswa">
+    <title>Admin Dashboard UKS</title>
+    <link rel="stylesheet" href="dash.css?v=4">
 </head>
 <body>
 
@@ -42,8 +45,8 @@ $selesai = count(array_filter($pengajuan, function($p) {
             <p>Kelola pengajuan siswa, berikan diagnosis, dan tindak lanjut.</p>
         </div>
         <div class="header-actions">
-            <a href="admin_tracking.php" class="btn btn-track">Tracking</a>
-            <a href="logout.php" class="btn btn-logout" onclick="return confirm('Yakin ingin logout?')">
+            <a href="admin_tracking.php" class="btn btn-track" aria-label="Halaman tracking pengajuan">Tracking</a>
+            <a href="logout.php" class="btn btn-logout" onclick="return confirm('Yakin ingin logout?')" aria-label="Keluar dari akun">
                Logout
             </a>
         </div>
@@ -71,8 +74,13 @@ $selesai = count(array_filter($pengajuan, function($p) {
         <div class="table-toolbar">
             <h3>Data Pengajuan</h3>
             <div class="search-box">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5d6d6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="16.65" y1="16.65" x2="21" y2="21"></line></svg>
-                <input type="text" id="searchInput" placeholder="Cari nama, kelas, keluhan, atau status">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5d6d6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="16.65" y1="16.65" x2="21" y2="21"></line></svg>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Cari nama, kelas, keluhan, atau status"
+                    aria-label="Cari dalam data pengajuan"
+                >
             </div>
         </div>
         <div class="table-wrapper">
@@ -135,17 +143,6 @@ $selesai = count(array_filter($pengajuan, function($p) {
 </div>
 
 <script src="auth-uks/transisi.js"></script>
-<script>
-    const searchInput = document.getElementById('searchInput');
-    const rows = Array.from(document.querySelectorAll('#tableBody tr'));
-
-    searchInput?.addEventListener('input', () => {
-        const term = searchInput.value.toLowerCase();
-        rows.forEach(row => {
-            const text = row.innerText.toLowerCase();
-            row.style.display = text.includes(term) ? '' : 'none';
-        });
-    });
-</script>
+<script src="js/dashboard.js"></script>
 </body>
 </html>
